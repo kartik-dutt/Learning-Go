@@ -18,12 +18,12 @@ From primitives to concurrent processes to json handling, This is my attempt to 
 
 4.) GoLang Docs
 
-## Run tutorial files :
+## Run / Build files :
 ```
 go run src/file_name.go // Execute the file.
 ```
 
-To build binaries, use
+To build binaries, use :
 ```
 go build src/file_name.go
 ```
