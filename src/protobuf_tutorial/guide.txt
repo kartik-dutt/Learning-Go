@@ -1,0 +1,5 @@
+1. Go mod init github_repo_url/program_name
+2. Create the proto file and generate pb file using protoc --go_out=.  ./{file_name}.proto
+3. Go mod tidy
+3. Go build
+3. Execute.
