@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	proto "github.com/kartik-dutt/Learning-Go/proto"
@@ -14,7 +15,9 @@ type server struct {
 
 func (s *server) Add(ctx context.Context, request *proto.Request) (*proto.Response, error) {
 	a, b := request.GetNum1(), request.GetNum2()
+	fmt.Println(a, b)
 	res := a + b
+
 	return &proto.Response{Ans: res}, nil
 }
 
