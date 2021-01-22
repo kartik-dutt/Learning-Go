@@ -12,26 +12,34 @@ import (
 )
 
 func main() {
-	conn, _ := grpc.Dial("localhost:4040", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:4040", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
 	client := proto.NewAddServiceClient(conn)
 
 	g := gin.Default()
-	g.GET("/add/:a/:b", func(ctx *gin.Context) {
-		a, _ := strconv.ParseUint(ctx.Param("num1"), 10, 64)
-		b, _ := strconv.ParseUint(ctx.Param("num2"), 10, 64)
-		req := &proto.Request{Num1: int64(a), Num2: int64(b)}
+	g.GET("/add/:num1/:num2", func(ctx *gin.Context) {
+		a, err := strconv.ParseUint(ctx.Param("num1"), 10, 32)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Param"})
+			return
+		}
+		b, _ := strconv.ParseUint(ctx.Param("num2"), 10, 32)
+		fmt.Println(a, b)
+		req := &proto.Request{Num1: int32(a), Num2: int32(b)}
 		if res, err := client.Add(ctx, req); err == nil {
-			ctx.Json(http.StatusOK, gin.H{"result": fmt.Sprintf(res.Ans)})
+			ctx.JSON(http.StatusOK, gin.H{"result": fmt.Sprint(res.Ans)})
 		}
 	})
 
-	g.GET("/mult/:a/:b", func(ctx *gin.Context) {
-		a, _ := strconv.ParseUint(ctx.Param("num1"), 10, 64)
-		b, _ := strconv.ParseUint(ctx.Param("num2"), 10, 64)
-		req := &proto.Request{Num1: int64(a), Num2: int64(b)}
+	g.GET("/mult/:num1/:num2", func(ctx *gin.Context) {
+		a, _ := strconv.ParseUint(ctx.Param("num1"), 10, 32)
+		b, _ := strconv.ParseUint(ctx.Param("num2"), 10, 32)
+		req := &proto.Request{Num1: int32(a), Num2: int32(b)}
 		if res, err := client.Multiply(ctx, req); err == nil {
-			ctx.Json(http.StatusOK, gin.H{
-				"result": fmt.Sprintf(res.Ans),
+			ctx.JSON(http.StatusOK, gin.H{
+				"result": fmt.Sprint(res.Ans),
 			})
 		}
 	})
